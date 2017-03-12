@@ -1,6 +1,33 @@
 <?php 
-	if($_POST)
+	   $conn = mysqli_connect('localhost', 'root','');
+	   if(! $conn )
+	   {
+	     die('Could not connect: ' . mysql_error());
+	   }
+	   $query = 'CREATE DATABASE IF NOT EXISTS myphpform;';
+	   $conn->query($query);
+	   $conn->close();
+	   $query1='CREATE TABLE IF NOT EXISTS formdetail (
+		id INT(6) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+		firstname VARCHAR(30) NOT NULL,
+		lastname VARCHAR(30) NOT NULL,
+		email VARCHAR(50),
+		profilepic VARCHAR(30),
+		state VARCHAR(30),
+		city VARCHAR(30),
+		dob VARCHAR(30)
+		);';
+		$conn = mysqli_connect('localhost', 'root','','myphpform');
+	   if(! $conn )
+	   {
+	     die('Could not connect: ' . mysql_error());
+	   }
+		$conn->query($query1);
+		$conn->close();
+
+	if(isset($_POST['insertvalue']))
 	{
+		var_dump($_POST);
 		$target_dir = "uploads/";
 		$target_file = $target_dir . basename($_FILES["fileToUpload"]["name"]);
 
@@ -23,9 +50,9 @@
 		    } else {
 		        echo "Sorry, there was an error uploading your file.";
 		    }
-	
-		$conn = mysqli_connect('localhost', 'root', '', 'phpprog');
-	   if(! $conn )
+
+		$conn = mysqli_connect('localhost', 'root', '','myphpform');
+	   /*if(! $conn )
 	   {
 	     die('Could not connect: ' . mysql_error());
 	   }
@@ -38,34 +65,60 @@
 		    echo "New record created successfully";
 		} else {
 		    echo "Error: " . $sql . "<br>" . $conn->error;
-		}
+		}*/
 
 		$conn->close();
 			}
 
 ?>
 <html>
+<head>
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+</head>
 <body>
+	<div class="container">
+		<form method="post" name="formdata" action="">
+			<div class="form-group">
+				<label>First Name</label>
+				<input type="text" name="firstname" placeholder="enter first name">
+				<label>Last Name</label>
+				<input type="text" name="lastname" placeholder="enter last name">
+			</div>
+			<div class="form-group">
+				<label>Email</label>
+				<input type="email" name="email" placeholder="enter email">
+			</div>
 
-<form action="" method="post" enctype="multipart/form-data">
-<p>Your Name: <input type="text" name="yourname" /><br />
-E-mail: <input type="text" name="email" /></p>
-
-<p>Do you like this website?
-<input type="radio" name="likeit" value="Yes" checked="checked" /> Yes
-<input type="radio" name="likeit" value="No" /> No
-<input type="radio" name="likeit" value="Not sure" /> Not sure</p>
-
-<p>Your comments:<br />
-<textarea name="comments" rows="10" cols="40"></textarea></p>
-
-Select image to upload:
-    <input type="file" name="fileToUpload" id="fileToUpload">
-
-<p><input type="submit" value="Send it!"></p>
+			<div class="form-group">
+				<label>Select Profile picture</label>
+				<input type="file" name="fileToUpload" id="fileToUpload">
+			</div>
+			<div class="form-group">
+				<label>State</label>
+				<input type="text" name="state" placeholder="enter state">
+				<label>City</label>
+				<input type="text" name="city" placeholder="enter city">
+			</div>
+			<div class="form-group">
+				<label>Date Of Birth</label>
+				<input type="date" name="dob" placeholder="select date" id="datepicker">
+			</div>
+			<div class="form-group">
+				<p>Do you like this website?
+					<input type="radio" name="likeit" value="Yes" checked="checked" /> Yes
+					<input type="radio" name="likeit" value="No" /> No
+					<input type="radio" name="likeit" value="Not sure" /> Not sure
+				</p>
+			</div>
+			<input type="submit" value="submit" name="insertvalue">
+		</form>
+	</div>
 </form>
 <?php 
-	$conn = mysqli_connect('localhost', 'root', '', 'phpprog');
+/*	$conn = mysqli_connect('localhost', 'root', '', 'phpprog');
 	   if(! $conn )
 	   {
 	     die('Could not connect: ' . mysql_error());
@@ -90,7 +143,7 @@ else{if ($result->num_rows > 0) {
     }
 } else {
     echo "0 results";
-}}
+}}*/
 ?>
 </body>
 </html>
