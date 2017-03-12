@@ -25,6 +25,26 @@
 		$conn->query($query1);
 		$conn->close();
 
+		/* delete code start */
+		if (isset($_POST['delete'])) {
+
+			$conn = mysqli_connect('localhost', 'root','','myphpform');
+		   if(! $conn )
+		   {
+		     die('Could not connect: ' . mysql_error());
+		   }
+		   $delete = "DELETE FROM formdetail WHERE id=".$_POST['deleteId'];
+
+			if ($conn->query($delete) === TRUE) {
+			    echo "Record deleted successfully";
+			} else {
+			    echo "Error deleting record: " . $conn->error;
+			}
+			$conn->close();
+		/*delete code end*/
+		}
+
+	/* data insert code start */
 	if(isset($_POST['submit']))
 	{
 		$target_dir = "uploads/";
@@ -100,7 +120,7 @@
 		}
 		/*validation of form end*/
 	}
-
+	/* data insert code end */
 ?>
 <html>
 <head>
@@ -117,32 +137,37 @@
   </script>
 </head>
 <body>
+<!-- form data input start -->
 	<div class="container">
 		<form method="post" name="formdata" action="" enctype="multipart/form-data">
 			<div class="form-group">
 				<label>First Name</label>
-				<input type="text" name="firstname" placeholder="enter first name" pattern="[a-zA-Z]{3,}" title="only alphabets" required>
+				<input type="text" name="firstname" placeholder="enter first name" pattern="[a-zA-Z]{3,}" title="only alphabets" required />
+			</div>
+			<div class="form-group">
 				<label>Last Name</label>
-				<input type="text" name="lastname" placeholder="enter last name" pattern="[a-zA-Z]{2,}" title="only alphabets" required>
+				<input type="text" name="lastname" placeholder="enter last name" pattern="[a-zA-Z]{2,}" title="only alphabets" required />
 			</div>
 			<div class="form-group">
 				<label>Email</label>
-				<input type="email" name="email" placeholder="enter email">
+				<input type="email" name="email" placeholder="enter email" />
 			</div>
 
 			<div class="form-group">
 				<label>Select Profile picture</label>
-				<input type="file" name="fileToUpload" id="fileToUpload">
+				<input type="file" name="fileToUpload" id="fileToUpload" />
 			</div>
 			<div class="form-group">
 				<label>State</label>
-				<input type="text" name="state" placeholder="enter state" required>
+				<input type="text" name="state" placeholder="enter state" required />
+			</div>
+			<div class="form-group">
 				<label>City</label>
-				<input type="text" name="city" placeholder="enter city" required>
+				<input type="text" name="city" placeholder="enter city" required />
 			</div>
 			<div class="form-group">
 				<label>Date Of Birth</label>
-				<input type="date" name="dob" placeholder="select date" id="datepicker">
+				<input type="date" name="dob" placeholder="select date" id="datepicker" />
 			</div>
 			<div class="form-group">
 				<p>Do you like this website?
@@ -151,37 +176,86 @@
 					<input type="radio" name="likeit" value="Not sure" /> Not sure
 				</p>
 			</div>
-			<input type="submit" value="submit" name="submit">
+			<input type="submit" value="submit" name="submit" class="btn" />
 		</form>
 	</div>
-</form>
-<?php 
-/*	$conn = mysqli_connect('localhost', 'root', '', 'phpprog');
-	   if(! $conn )
-	   {
-	     die('Could not connect: ' . mysql_error());
-	   }
-	   $sql ='SELECT *
-        FROM form_detail';
+<!-- input forn end -->
+<!-- *************************************************************************************************************************** -->
+<!-- display data start -->
+ 	<div class="form-group">
+ 	<form method="post" action="" name="showform">
+	<label>Display all data</label>
+	<input type="submit" name="show" value="show data" class="btn"s/>
+	</form> 
+	<table class="table table-striped">
+		<?php 
+
+		if(isset($_POST['show']))
+		{
+			?>
+				<tr>
+				<th>id</th>
+				<th>firstname</th>
+				<th>lastname</th>
+				<th>email</th>
+				<th>profile picture</th>
+				<th>date of birth</th>
+				<th>state</th>
+				<th>city</th>
+				<th>delete user</th>
+			</tr>
+			<?php
+			$conn = mysqli_connect('localhost', 'root', '', 'myphpform');
+			   if(! $conn )
+			   {
+			     die('Could not connect: ' . mysql_error());
+			   }
+			   $sql ='SELECT *
+		        FROM formdetail';
 
 
-$result = $conn->query($sql);
-if(! $result )
-{
-  die('Could not get data: ' . mysql_error());
-}
-else{if ($result->num_rows > 0) {
-    // output data of each row
-    while($row = $result->fetch_assoc()) {
-    	if(isset($row['yourname']))
-    	{
-    		$name = $row['yourname'];
-    	}
-        echo "id: " . $row["id"]. " - Name: " . $name. " " . $row["email"]. " " . $row["comment"]. " " . $row["path"]. " " ."<br>";
-    }
-} else {
-    echo "0 results";
-}}*/
-?>
+			$result = $conn->query($sql);
+			if(! $result )
+			{
+			  die('Could not get data: ' . mysql_error());
+			}
+			else{if ($result->num_rows > 0) {
+			    // output data of each row
+			    while($row = $result->fetch_assoc()) {
+			    	if(isset($row['firstname']))
+			    	{
+			    		$name = $row['firstname'];
+			    	}
+			        //echo "id: " . $row["id"]. " - Name: " . $name. " " . $row["email"]. " " . $row["comment"]. " " . $row["path"]. " " ."<br>";
+			    	//var_dump($row);
+			    	?>
+			    	<tr>
+			    		<td><?php echo $row['id']; ?></td>
+			    		<td><?php echo $row['firstname']; ?></td>
+			    		<td><?php echo $row['lastname']; ?></td>
+			    		<td><?php echo $row['email']; ?></td>
+			    		<td><img src="uploads/<?php echo $row['profilepic']; ?>" width="50px" alt = "<?php echo $row['profilepic'];?>"/></td>
+			    		<td><?php echo $row['dob']; ?></td>
+			    		<td><?php echo $row['state']; ?></td>
+			    		<td><?php echo $row['city']; ?></td>
+			    		<td>
+			    			<form action="" method="post" name="deletedata">
+				    			<input type="hidden" name="deleteId" value="<?php echo $row['id']; ?>" />
+				    			<input type="submit" name="delete" value="delete" class="btn">
+			    			</form>
+			    		</td>
+			    	</tr>
+			    	<?php
+
+			    }
+			} else {
+			    echo "0 results";
+			}}
+		}
+		?>	
+		 
+	</table>	
+ 	</div>
+ <!-- display data end -->
 </body>
 </html>
